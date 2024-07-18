@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tables": "node -r dotenv/config ./tables/index.js"
   },
   "dependencies": {
+    "@auth/pg-adapter": "^1.4.1",
     "colors": "^1.4.0",
     "dotenv": "^16.4.5",
     "next": "14.2.5",
