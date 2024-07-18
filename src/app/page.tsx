@@ -1,3 +1,9 @@
+import { Button } from '@nextui-org/react';
+
 export default function Home() {
-  return <div className="bg-red-200 text-white">Hello Zunnoorain</div>;
+  return (
+    <div>
+      <Button>Click me</Button>
+    </div>
+  );
 }
