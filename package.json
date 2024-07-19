@@ -13,6 +13,7 @@
     "@auth/pg-adapter": "^1.4.1",
     "@hookform/resolvers": "^3.9.0",
     "@nextui-org/react": "^2.4.5",
+    "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "dotenv": "^16.4.5",
     "framer-motion": "^11.3.7",
@@ -24,7 +25,9 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
+    "@types/pg": "^8.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

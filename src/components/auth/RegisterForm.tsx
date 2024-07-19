@@ -5,8 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Input } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import CardWrapper from './CardWrapper';
+import { registerUser } from '@/actions/auth/register-user';
+import { useTransition } from 'react';
 
 function RegisterForm() {
+  const [isPending, startTransition] = useTransition();
+
   const {
     register,
     handleSubmit,
@@ -15,8 +19,10 @@ function RegisterForm() {
     resolver: zodResolver(RegUserSchema),
   });
 
-  const formSubmit = async (formData: RegUserType) => {
-    console.log(formData);
+  const formSubmit = (formData: RegUserType) => {
+    startTransition(async () => {
+      await registerUser(formData);
+    });
   };
 
   return (
@@ -36,6 +42,7 @@ function RegisterForm() {
             label="Name"
             placeholder="John Doe"
             variant="underlined"
+            disabled={isPending}
             isInvalid={!!errors.name}
             errorMessage={errors.name?.message}
           />
@@ -45,6 +52,7 @@ function RegisterForm() {
             label="Email"
             placeholder="johndoe@gmail.com"
             variant="underlined"
+            disabled={isPending}
             isInvalid={!!errors.email}
             errorMessage={errors.email?.message}
           />
@@ -54,10 +62,11 @@ function RegisterForm() {
             label="Password"
             placeholder="******"
             variant="underlined"
+            disabled={isPending}
             isInvalid={!!errors.password}
             errorMessage={errors.password?.message}
           />
-          <Button type="submit" color="primary">
+          <Button disabled={isPending} type="submit" color="primary">
             Submit
           </Button>
         </form>
