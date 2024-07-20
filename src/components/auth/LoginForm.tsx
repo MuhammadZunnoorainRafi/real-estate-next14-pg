@@ -10,8 +10,12 @@ import { useState, useTransition } from 'react';
 import { loginUser } from '@/actions/auth/login-user';
 import ErrorMessage from './ErrorMessage';
 import SuccessMessage from './SuccessMessage';
+import { useGetUserClient } from '@/lib/hooks/getUserClient';
+import { useRouter } from 'next/navigation';
 
 function LoginForm() {
+  const user = useGetUserClient();
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -38,6 +42,8 @@ function LoginForm() {
     });
   };
 
+  if (user) router.push('/');
+
   return (
     <CardWrapper
       headerLable="Login Form"
@@ -55,6 +61,7 @@ function LoginForm() {
             label="Email"
             placeholder="johndoe@gmail.com"
             variant="underlined"
+            isDisabled={isPending}
             isInvalid={!!errors.email}
             errorMessage={errors.email?.message}
           />
@@ -64,10 +71,11 @@ function LoginForm() {
             label="Password"
             placeholder="******"
             variant="underlined"
+            isDisabled={isPending}
             isInvalid={!!errors.password}
             errorMessage={errors.password?.message}
           />
-          <Button type="submit" color="primary">
+          <Button isDisabled={isPending} type="submit" color="primary">
             Submit
           </Button>
         </form>

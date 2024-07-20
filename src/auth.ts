@@ -3,7 +3,7 @@ import NextAuth from 'next-auth';
 import pool from './lib/db';
 import Credentials from 'next-auth/providers/credentials';
 import { LogUserSchema } from './lib/schemas';
-import { getUserByEmail } from './procedures/auth-procedure';
+import { getUserByEmail, getUserById } from './procedures/auth-procedure';
 import bcrypt from 'bcryptjs';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -12,10 +12,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   pages: { signIn: '/auth/login' },
   callbacks: {
-    session: async ({ session }) => {
+    session: async ({ session, token }) => {
+      if (session && token.sub) {
+        session.user.id = token.sub;
+        session.user.name = token.name;
+        session.user.email = token.email as string;
+      }
+
       return session;
     },
     jwt: async ({ token }) => {
+      if (!token.sub) return token;
+      const db = await pool.connect();
+      const user = await getUserById(token.sub, db);
+      db.release();
+      token.name = user.name;
+      token.email = user.email;
+      if (!user) return token;
+
       return token;
     },
   },
