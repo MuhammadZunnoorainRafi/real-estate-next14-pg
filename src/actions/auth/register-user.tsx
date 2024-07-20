@@ -26,7 +26,7 @@ export const registerUser = async (formData: RegUserType) => {
     if (!rows[0]) {
       return { error: 'User not created' };
     }
-    console.log(rows[0]);
+    return { success: 'User Registered Successfully' };
   } catch (error) {
     console.log(error);
     return { error: 'Internal Server Error' };

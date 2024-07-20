@@ -6,10 +6,14 @@ import { Button, Input } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import CardWrapper from './CardWrapper';
 import { registerUser } from '@/actions/auth/register-user';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
+import ErrorMessage from './ErrorMessage';
+import SuccessMessage from './SuccessMessage';
 
 function RegisterForm() {
   const [isPending, startTransition] = useTransition();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const {
     register,
@@ -20,8 +24,16 @@ function RegisterForm() {
   });
 
   const formSubmit = (formData: RegUserType) => {
+    setErrorMessage('');
+    setSuccessMessage('');
     startTransition(async () => {
-      await registerUser(formData);
+      const res = await registerUser(formData);
+      if (res.error) {
+        setErrorMessage(res.error);
+      }
+      if (res.success) {
+        setSuccessMessage(res.success);
+      }
     });
   };
 
@@ -42,7 +54,7 @@ function RegisterForm() {
             label="Name"
             placeholder="John Doe"
             variant="underlined"
-            disabled={isPending}
+            isDisabled={isPending}
             isInvalid={!!errors.name}
             errorMessage={errors.name?.message}
           />
@@ -52,7 +64,7 @@ function RegisterForm() {
             label="Email"
             placeholder="johndoe@gmail.com"
             variant="underlined"
-            disabled={isPending}
+            isDisabled={isPending}
             isInvalid={!!errors.email}
             errorMessage={errors.email?.message}
           />
@@ -62,14 +74,16 @@ function RegisterForm() {
             label="Password"
             placeholder="******"
             variant="underlined"
-            disabled={isPending}
+            isDisabled={isPending}
             isInvalid={!!errors.password}
             errorMessage={errors.password?.message}
           />
-          <Button disabled={isPending} type="submit" color="primary">
+          <Button isDisabled={isPending} type="submit" color="primary">
             Submit
           </Button>
         </form>
+        <ErrorMessage message={errorMessage} />
+        <SuccessMessage message={successMessage} />
       </div>
     </CardWrapper>
   );

@@ -6,8 +6,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LogUserSchema } from '@/lib/schemas';
 import { LogUserType } from '@/lib/types';
 import { useForm } from 'react-hook-form';
+import { useState, useTransition } from 'react';
+import { loginUser } from '@/actions/auth/login-user';
+import ErrorMessage from './ErrorMessage';
+import SuccessMessage from './SuccessMessage';
 
 function LoginForm() {
+  const [isPending, startTransition] = useTransition();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   const {
     register,
     handleSubmit,
@@ -16,8 +24,18 @@ function LoginForm() {
     resolver: zodResolver(LogUserSchema),
   });
 
-  const formSubmit = async (formData: LogUserType) => {
-    console.log(formData);
+  const formSubmit = (formData: LogUserType) => {
+    setErrorMessage('');
+    setSuccessMessage('');
+    startTransition(async () => {
+      const res = await loginUser(formData);
+      if (res?.error) {
+        setErrorMessage(res.error);
+      }
+      if (res?.success) {
+        setSuccessMessage(res.success);
+      }
+    });
   };
 
   return (
@@ -53,6 +71,8 @@ function LoginForm() {
             Submit
           </Button>
         </form>
+        <ErrorMessage message={errorMessage} />
+        <SuccessMessage message={successMessage} />
       </div>
     </CardWrapper>
   );
