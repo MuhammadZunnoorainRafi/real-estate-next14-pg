@@ -6,6 +6,7 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  Pagination,
 } from '@nextui-org/react';
 import Link from 'next/link';
 import UserDropDown from './UserDropDown';
@@ -20,8 +21,8 @@ async function Header() {
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
+          <Link color="foreground" href="/add">
+            Add Property
           </Link>
         </NavbarItem>
         <NavbarItem isActive>
